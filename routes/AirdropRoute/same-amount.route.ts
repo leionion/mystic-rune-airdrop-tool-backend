@@ -63,7 +63,6 @@ SameAmountRouter.post(
           btc_amount: input_utxo_value,
         },
       ];
-
       // Send BTC utxo containing rune token
       const response = await sendRuneBtcTransaction(
         rune_id,

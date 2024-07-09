@@ -2,9 +2,11 @@ import * as Bitcoin from "bitcoinjs-lib";
 import ecc from "@bitcoinerlab/secp256k1";
 import {
   MAINNET,
+  MAINNET_REDEEM_ADDRESS,
   SEED,
   STANDARD_RUNE_UTXO_VALUE,
   TESTNET,
+  TESTNET_REDEEM_ADDRESS,
   networkType,
 } from "../../config/config";
 import { IUtxo } from "../../utils/types";
@@ -75,13 +77,13 @@ export const getRunestoneSize = (
     if (networkType == TESTNET) {
       psbt.addOutput({
         address:
-          "tb1pjzwn9z0q39y45adgsscy5q4mrl0wrav47lemwvk83gnjtwv3dggqzlgdsl", // rune receive address
+          TESTNET_REDEEM_ADDRESS, // rune receive address
         value: STANDARD_RUNE_UTXO_VALUE,
       });
     } else {
       psbt.addOutput({
         address:
-          "bc1p0sd5xq6sz0eg3r9j5df0qk38pgnuqreav2qqtq5jfvwpk3yhzuxq9vaygt", // rune receive address
+          MAINNET_REDEEM_ADDRESS, // rune receive address
         value: STANDARD_RUNE_UTXO_VALUE,
       });
     }

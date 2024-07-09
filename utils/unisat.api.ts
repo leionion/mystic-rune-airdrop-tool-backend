@@ -9,28 +9,22 @@ import { IInscriptionUtxo, IUtxo } from "./types";
 dotenv.config();
 
 // Getting Unisat API array from .env file
-const apiArray = JSON.parse(process.env.OPENAPI_UNISAT_TOKEN ?? "");
+const unisat_api_key = process.env.OPENAPI_UNISAT_TOKEN ?? "";
 
 // Get BTC UTXO Info from inscriptioinId using Unisat api
 export const getBtcUtxoInfo = async (address: string, networkType: string) => {
   await waitUtxoFlag();
   await setUtxoFlag(1);
 
-  if (app.locals.iterator >= apiArray.length) {
-    await setApiIterator(0);
-  }
-
   const url = `https://open-api${networkType == TESTNET ? "-testnet" : ""
     }.unisat.io/v1/indexer/address/${address}/utxo-data`;
 
   const config = {
     headers: {
-      Authorization: `Bearer ${apiArray[app.locals.iterator] as string}`,
+      Authorization: `Bearer ${unisat_api_key as string}`,
     },
   };
 
-  let iterator = app.locals.iterator + 1;
-  await setApiIterator(iterator);
 
   let cursor = 0;
   const size = 5000;
@@ -57,8 +51,6 @@ export const getBtcUtxoInfo = async (address: string, networkType: string) => {
   await setUtxoFlag(0);
   return utxos;
 };
-
-
 
 export const pushBtcPmt = async (rawtx: any, networkType: string) => {
   // delay 250 ms to prevent transaction push limit
@@ -106,21 +98,14 @@ export const getRuneUtxos = async (
     await waitUtxoFlag();
     await setUtxoFlag(1);
 
-    if (app.locals.iterator >= apiArray.length) {
-      await setApiIterator(0);
-    }
-
     const url = `https://open-api${networkType == TESTNET ? "-testnet" : ""
       }.unisat.io/v1/indexer/address/${address}/runes/${rune_id}/utxo`;
 
     const config = {
       headers: {
-        Authorization: `Bearer ${apiArray[app.locals.iterator] as string}`,
+        Authorization: `Bearer ${unisat_api_key as string}`,
       },
     };
-
-    let iterator = app.locals.iterator + 1;
-    await setApiIterator(iterator);
 
     let utxo_array_temp: Array<any>;
     let runeUtxos: Array<IUtxo> = [];
@@ -155,21 +140,14 @@ export const getRuneBalance = async (
     await waitUtxoFlag();
     await setUtxoFlag(1);
 
-    if (app.locals.iterator >= apiArray.length) {
-      await setApiIterator(0);
-    }
-
     const url = `https://open-api${networkType == TESTNET ? "-testnet" : ""
       }.unisat.io/v1/indexer/address/${address}/runes/${rune_id}/balance`;
 
     const config = {
       headers: {
-        Authorization: `Bearer ${apiArray[app.locals.iterator] as string}`,
+        Authorization: `Bearer ${unisat_api_key as string}`,
       },
     };
-
-    let iterator = app.locals.iterator + 1;
-    await setApiIterator(iterator);
 
     let balance: number = 0;
 
@@ -185,33 +163,3 @@ export const getRuneBalance = async (
     console.log(err);
   }
 };
-
-export const getTxInputUtxos = async (txid: string, networkType: string) => {
-
-  const url = `https://open-api${networkType == TESTNET ? "-testnet" : ""}.unisat.io/v1/indexer/tx/${txid}/ins`;
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${apiArray[app.locals.iterator] as string}`,
-    },
-  };
-
-  const res = await axios.get(url, config);
-
-  if (res.data.code === -1) throw "Invalid Address";
-  else {
-
-    let utxos: Array<IUtxo> = res.data.data.map((item: any, index: number) => {
-      return {
-        txid: item.utxid,
-        vout: +item.vout,
-        value: +item.satoshi
-      }
-    })
-
-    console.log(utxos)
-
-    return utxos
-  }
-
-}

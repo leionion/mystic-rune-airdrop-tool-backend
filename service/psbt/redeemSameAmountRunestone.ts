@@ -16,7 +16,7 @@ export const calculateRedeemSameAmountTxFee = (
   rune_id: string,
   feeRate: number,
   amount: number,
-  addressList: Array<string>
+  addressList: Array<any>
 ): number => {
   // Initialize seed Wallet
   const wallet: SeedWallet = initializeWallet(
@@ -52,13 +52,12 @@ export const calculateRedeemSameAmountTxFee = (
     },
     tapInternalKey: Buffer.from(wallet.publicKey, "hex").subarray(1, 33),
   });
-
+  psbt.setMaximumFeeRate(100000);
   // Add output runestone
   psbt.addOutput({
     script: mintstone.encipher(),
     value: 0,
   });
-
   // Add output rune utxo
   for (let i = 0; i < addressList.length; i++) {
     if (networkType == TESTNET) {
@@ -77,7 +76,5 @@ export const calculateRedeemSameAmountTxFee = (
   const signedPsbt: Bitcoin.Psbt = wallet.signPsbt(psbt, wallet.ecPair);
 
   // return Virtual Size of Runestone Transaction
-  console.log(signedPsbt.extractTransaction().virtualSize())
-
   return signedPsbt.extractTransaction(true).virtualSize() * feeRate;
 };

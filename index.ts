@@ -5,7 +5,7 @@ import express from "express";
 import http from "http";
 
 // Configuration Settings from config file, .env file
-import { PORT } from "./config/config";
+import { NETWORK_TYPE, PORT } from "./config/config";
 
 // Mutex for API Rate limit protection functionality
 import { Mutex } from "async-mutex";
@@ -22,7 +22,6 @@ import EstimateDifferentAmountRouter from "./routes/EstimateRoute/different-amou
 import EstimateSameAmountRouter from "./routes/EstimateRoute/same-amount-estimate.route";
 import LargeDifferentAmountRouter from "./routes/AirdropRoute/large-different-amount.route";
 import DifferentAmountAirdropRouter from "./routes/AirdropRoute/large-different-amount-airdrop.route";
-import RBFRouter from "./routes/RbfRouer/RBFRouter";
 
 // Mutex Variable setting for API Rate Limit functionality
 export const flagMutex = new Mutex();
@@ -64,15 +63,15 @@ app.use("/api", DifferentAmountAirdropRouter)
 app.use("/api/estimate", EstimateSameAmountRouter);
 app.use("/api/estimate", EstimateDifferentAmountRouter);
 
-// RBF
-app.use("/api/rbf", RBFRouter)
-
 // Swagger endpoint Settings
 app.use(
   "/api-docs",
   swaggerUi.serve,
   swaggerUi.setup(swaggerDocument, { explorer: true })
 );
+
+// Set Global Variable for network type
+app.locals.networkType = NETWORK_TYPE;
 
 // Set Global Variable Iterator for Wallet management
 app.locals.walletIndex = 0;

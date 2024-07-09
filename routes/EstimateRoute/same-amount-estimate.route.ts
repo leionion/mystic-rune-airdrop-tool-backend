@@ -46,13 +46,10 @@ EstimateSameAmountRouter.post(
         redeemAddress = MAINNET_REDEEM_ADDRESS;
       }
 
-      for (let i = 0; i < size; i++) {
-        if (networkType == TESTNET)
-          addressList.push({
-            address: redeemAddress,
-            amount: 1,
-          });
+      for (let i = 0; i < +size; i++) {
+        addressList.push(redeemAddress);
       }
+
       // calculate utxo size for rune airdrop transaction
       const redeemFee = calculateRedeemSameAmountTxFee(
         REDEEM_RUNE_ID,
