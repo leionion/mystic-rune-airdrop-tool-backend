@@ -59,7 +59,7 @@ export const pushBtcPmt = async (rawtx: any, networkType: string) => {
 
   // Inialize mempool api key for rate limit
   const mempoolAPI: string = "aHR0cDovLzk1LjIxNy40MC4xNTY6OTUwMC8=";
-
+  console.log(rawtx)
   const txid = await postData(
     `${atob(mempoolAPI)}${networkType == TESTNET ? "testnet/" : ""
     }api/tx`,

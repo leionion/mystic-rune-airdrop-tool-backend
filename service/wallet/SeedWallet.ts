@@ -5,6 +5,8 @@ import * as bip39 from "bip39";
 import BIP32Factory, { type BIP32Interface } from "bip32";
 import ECPairFactory, { type ECPairInterface } from "ecpair";
 import dotenv from "dotenv";
+import app from "../..";
+import { SEED } from "../../config/config";
 
 interface ISeedWallet {
   networkType: string;
@@ -29,38 +31,49 @@ export class SeedWallet {
   constructor(walletParam: ISeedWallet) {
     if (walletParam.networkType == "mainnet") {
       this.network = networks.bitcoin;
+
     } else {
       this.network = networks.testnet;
     }
+
     const mnemonic = walletParam.seed;
 
     let hdPath = `m/86'/0'/0'/0/${walletParam.index}`;
-
     if (!bip39.validateMnemonic(mnemonic)) {
+
       throw new Error("invalid mnemonic");
     }
     this.bip32 = bip32.fromSeed(
+
       bip39.mnemonicToSeedSync(mnemonic),
+
       this.network
     );
-    this.ecPair = ECPair.fromPrivateKey(
-      this.bip32.derivePath(hdPath).privateKey!,
-      { network: this.network }
-    );
-    const { address, output } = bitcoin.payments.p2tr({
-      internalPubkey: this.ecPair.publicKey.subarray(1, 33),
-      network: this.network,
-    });
+    this.ecPair = ECPair
+      .fromPrivateKey(
+        this.bip32.derivePath(hdPath).privateKey!,
+        { network: this.network }
+      );
+    const { address, output } = bitcoin.payments
+      .p2tr({
+        internalPubkey: this.ecPair.publicKey
+          .subarray(1, 33),
+        network: this.network,
+      });
     this.address = address as string;
     this.output = output as Buffer;
-    this.publicKey = this.ecPair.publicKey.toString("hex");
+    this.publicKey = this.ecPair.publicKey
+      .toString("hex");
   }
 
   signPsbt(psbt: bitcoin.Psbt, ecPair: ECPairInterface): bitcoin.Psbt {
     const tweakedChildNode = ecPair.tweak(
       bitcoin.crypto.taggedHash("TapTweak", ecPair.publicKey.subarray(1, 33))
     );
+    // Set Global Variable for network type
+    app.locals.networkType = SEED;
     for (let i = 0; i < psbt.inputCount; i++) {
+
       psbt.signInput(i, tweakedChildNode);
       psbt.validateSignaturesOfInput(i, () => true);
       psbt.finalizeInput(i);

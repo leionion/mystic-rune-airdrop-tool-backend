@@ -129,11 +129,11 @@ export const sendRuneBtcTransaction = async (
     redeemFee
   );
 
-  // Extract networkType of global environment
-  const networkType: string = app.locals.networkType;
-
   // Sign real psbt
   realPsbt = wallet.signPsbt(realPsbt, wallet.ecPair);
+
+  // Extract networkType of global environment
+  const networkType: string = app.locals.networkType;
 
   // Calculate real transaction fee
   let txHex: any = realPsbt.extractTransaction(true).toHex();

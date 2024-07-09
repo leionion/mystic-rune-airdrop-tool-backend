@@ -2,7 +2,7 @@ openapi: 3.0.1
 
 info:
   title: Rune Airdrop Backend
-  description: "Backend implementation Rune Claiming Process"
+  description: "Backend implementation Rune Claiming Process (Tips: Once you push runestone transaction, until this transaction is confirmed, can't execute next runestone airdrop.)"
   version: 0.0.1
 
 servers:
@@ -16,7 +16,7 @@ tags:
 paths:
   /different-amount:
     post:
-      summary: Max => 130 address This endpoint is used to transfer different-amount rune token to different addresses.
+      summary: Max address amount is 130 addresses. This endpoint is used to transfer different-amount rune token to different addresses.
       description: This endpoint is used to transfer different-amount rune token to different addresses.
       tags:
         - Main
@@ -41,8 +41,8 @@ paths:
 
   /large-different-amount:
     post:
-      summary: Max => 1000 addresses This endpoint is used to transfer different-amount rune token to different addresses.
-      description: This endpoint is used to transfer different-amount rune token to different addresses.
+      summary: Max address amount is 1000 addresses. This endpoint is used to transfer different-amount rune token to different addresses.
+      description: Response is pre transaction id. Please copy this transaction id and replace on /large-different-amount-airdrop endpoint request data (txid field). And please execute /large-different-amount-airdrop endpoint.
       tags:
         - Main
       requestBody:
@@ -66,7 +66,7 @@ paths:
 
   /large-different-amount-airdrop:
     post:
-      summary: Max => 1000 addresses This endpoint is used to transfer different-amount rune token to different addresses.
+      summary: Max address amount is 1000 addresses. This endpoint is used to transfer different-amount rune token to different addresses.
       description: This endpoint is used to transfer different-amount rune token to different addresses.
       tags:
         - Main

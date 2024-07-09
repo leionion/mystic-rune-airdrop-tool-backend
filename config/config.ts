@@ -27,9 +27,6 @@ export const SEND_UTXO_FEE_LIMIT = 10000;
 
 export const SEED = process.env.SEED as string;
 
-// determine network type initialize variable of seed
-export const NETWORK_TYPE = process.env.SEED as string;
-
 // Split size for bundling
 export const SPLIT_ADDRESS_SIZE = 130;
 
