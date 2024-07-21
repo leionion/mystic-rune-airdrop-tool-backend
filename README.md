@@ -1,6 +1,6 @@
 ---
 
-# Mystic Runestone Airdrop Tool Backend
+# Mystic Rune Airdrop Tool Backend
 
 ## Overview
 
